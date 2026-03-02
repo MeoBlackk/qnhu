@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8/3 Memories Gift</title>
+    <style>
+        :root {
+            --pink-bg: #fce4ec;
+            --pink-light: #fbcfe8;
+            --pink-main: #f8bbd0;
+            --pink-dark: #d81b60;
+            --text-color: #d81b60;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--pink-bg);
+            background-image: linear-gradient(45deg, var(--pink-light) 25%, transparent 25%), 
+                              linear-gradient(-45deg, var(--pink-light) 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, var(--pink-light) 75%), 
+                              linear-gradient(-45deg, transparent 75%, var(--pink-light) 75%);
+            background-size: 60px 60px;
+            min-height: 100vh; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        /* --- MÀN HÌNH KHÓA --- */
+        #lock-screen {
+            position: relative; z-index: 1000;
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(15px);
+            padding: 30px 20px; border-radius: 40px; text-align: center;
+            width: 340px; border: 1px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* Style cho ảnh thay thế chữ "Mã bí mật" */
+        .lock-header-img {
+            width: 140px; /* Điều chỉnh kích thước ảnh của bạn tại đây */
+            height: auto;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dots { display: flex; justify-content: center; gap: 15px; margin: 10px 0 25px; }
+        .dot { width: 12px; height: 12px; border: 2px solid var(--pink-dark); border-radius: 50%; }
+        .dot.active { background: var(--pink-dark); }
+
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
+        .key { 
+            width: 60px; height: 60px; background: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-size: 20px; font-weight: bold; color: var(--pink-dark);
+            box-shadow: 0 4px 0 var(--pink-main); transition: 0.1s;
+        }
+        .key:active { transform: translateY(2px); box-shadow: none; }
+
+        /* --- POPUP --- */
+        #popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .popup-card {
+            background: white; padding: 30px; border-radius: 30px;
+            text-align: center; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .btn-continue {
+            background: var(--pink-dark); color: white; border: none;
+            padding: 12px 30px; border-radius: 25px; font-weight: bold;
+            cursor: pointer; margin-top: 20px;
+        }
+
+        /* --- STAGE RƠI ẢNH --- */
+        #main-stage {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; z-index: 10;
+        }
+
+        .falling-item {
+            position: absolute; top: -200px;
+            will-change: top;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .falling-photo {
+            width: 100px; height: 100px;
+            border: 4px solid white; border-radius: 10px;
+            object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .falling-text {
+            background: white; color: var(--pink-dark);
+            padding: 8px 15px; border-radius: 20px;
+            font-weight: bold; font-size: 13px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid var(--pink-main);
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <img src="./img/haha.png" class="lock-header-img" alt="Mã bí mật">
+        
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="keypad" id="keyboard"></div>
+    </div>
+
+    <div id="popup-overlay">
+        <div class="popup-card">
+            <h2 style="color:var(--pink-dark)">Ý nghĩa của Ncin ❤️</h2>
+            <p>Ncin được tách từ những chữ cái tên của anh Ngoc ChIến hoặc có thể là NC   I❤️   N :> .</p>
+            <button class="btn-continue" onclick="startFalling()">Tiếp tục</button>
+        </div>
+    </div>
+
+    <div id="main-stage"></div>
+
+    <script>
+        const PASS = "abcd";
+        const KEYS = ['a', 'b', 'c', 'd', 'n', 'f', 'c', 'i', 'k'];
+        let currentInput = "";
+        const dots = document.querySelectorAll('.dot');
+
+        // Bàn phím
+        KEYS.forEach(char => {
+            const btn = document.createElement('div');
+            btn.className = 'key';
+            btn.innerText = char;
+            btn.onclick = () => {
+                if(currentInput.length < 4) {
+                    currentInput += char;
+                    dots[currentInput.length-1].classList.add('active');
+                    if(currentInput.length === 4) {
+                        if(currentInput === PASS) {
+                            document.getElementById('lock-screen').style.display = "none";
+                            document.getElementById('popup-overlay').style.display = "flex";
+                        } else {
+                            currentInput = "";
+                            dots.forEach(d => d.classList.remove('active'));
+                        }
+                    }
+                }
+            };
+            document.getElementById('keyboard').appendChild(btn);
+        });
+
+        function startFalling() {
+            document.getElementById('popup-overlay').style.display = "none";
+            const stage = document.getElementById('main-stage');
+            stage.style.display = "block";
+
+            const laneCount = window.innerWidth > 600 ? 8 : 4; 
+            const laneWidth = window.innerWidth / laneCount;
+            let laneHeights = new Array(laneCount).fill(0);
+
+            const interval = setInterval(() => {
+                let availableLanes = [];
+                for(let i=0; i<laneCount; i++) {
+                    if(laneHeights[i] < window.innerHeight - 120) availableLanes.push(i);
+                }
+
+                if(availableLanes.length === 0) {
+                    clearInterval(interval);
+                    setTimeout(() => window.open("https://www.youtube.com/watch?v=5h8wdwKyeDM", "_blank"), 2000);
+                    return;
+                }
+
+                const laneIdx = availableLanes[Math.floor(Math.random() * availableLanes.length)];
+                spawnItem(laneIdx, laneWidth, laneHeights);
+            }, 600);
+        }
+
+        function spawnItem(laneIdx, laneWidth, laneHeights) {
+            const stage = document.getElementById('main-stage');
+            const item = document.createElement('div');
+            item.className = 'falling-item';
+            
+            let itemH = 0;
+            if(Math.random() > 0.4) {
+                const img = document.createElement('img');
+                img.src = `https://picsum.photos/150/150?random=${Math.random()}`;
+                img.className = 'falling-photo';
+                item.appendChild(img);
+                itemH = 100;
+            } else {
+                const span = document.createElement('span');
+                const words = ["Yêu em", "8/3 Vui Vẻ", "Xinh Đẹp", "Hạnh Phúc", "Princess"];
+                span.innerText = words[Math.floor(Math.random()*words.length)];
+                span.className = 'falling-text';
+                item.appendChild(span);
+                itemH = 40;
+            }
+
+            const xPos = laneIdx * laneWidth + (laneWidth/2 - 50); 
+            const stopY = window.innerHeight - laneHeights[laneIdx] - itemH - 20;
+            laneHeights[laneIdx] += (itemH + 20);
+
+            item.style.left = xPos + "px";
+            stage.appendChild(item);
+
+            const duration = 2000;
+            const start = performance.now();
+            function animate(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - (1 - progress) * (1 - progress);
+                item.style.top = (-200 + (stopY + 200) * ease) + "px";
+                if(progress < 1) requestAnimationFrame(animate);
+                else item.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+            }
+            requestAnimationFrame(animate);
+        }
+    </script>
+</body>
+</html>
