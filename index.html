@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>8/3 Memories Gift</title>
+    <title>8/3 Memories Gift - Special Edition</title>
     <style>
         :root {
             --pink-bg: #fce4ec;
@@ -11,6 +11,7 @@
             --pink-main: #f8bbd0;
             --pink-dark: #d81b60;
             --text-color: #d81b60;
+            --letter-pink: #fff0f5; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -33,146 +34,253 @@
             padding: 30px 20px; border-radius: 40px; text-align: center;
             width: 340px; border: 1px solid white;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: opacity 0.8s ease;
         }
 
-        /* Style cho ảnh thay thế chữ "Mã bí mật" */
-        .lock-header-img {
-            width: 140px; /* Điều chỉnh kích thước ảnh của bạn tại đây */
-            height: auto;
-            margin-bottom: 10px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
+        .lock-header-img { width: 140px; height: auto; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
         .dots { display: flex; justify-content: center; gap: 15px; margin: 10px 0 25px; }
-        .dot { width: 12px; height: 12px; border: 2px solid var(--pink-dark); border-radius: 50%; }
+        .dot { width: 12px; height: 12px; border: 2px solid var(--pink-dark); border-radius: 50%; transition: background 0.3s ease; }
         .dot.active { background: var(--pink-dark); }
-
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
-        .key { 
-            width: 60px; height: 60px; background: white; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; font-size: 20px; font-weight: bold; color: var(--pink-dark);
-            box-shadow: 0 4px 0 var(--pink-main); transition: 0.1s;
-        }
+        .key { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; font-weight: bold; color: var(--pink-dark); box-shadow: 0 4px 0 var(--pink-main); transition: all 0.2s ease; }
         .key:active { transform: translateY(2px); box-shadow: none; }
 
-        /* --- POPUP --- */
-        #popup-overlay {
+        /* --- POPUPS --- */
+        #popup-overlay, #wrong-pass-overlay, #final-letter-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);
             display: none; justify-content: center; align-items: center; z-index: 2000;
+            opacity: 0; transition: opacity 0.8s ease;
         }
-        .popup-card {
-            background: white; padding: 30px; border-radius: 30px;
-            text-align: center; width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        #popup-overlay.active, #wrong-pass-overlay.active, #final-letter-overlay.active { opacity: 1; }
+        
+        #click-trigger-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1500; display: none; cursor: pointer;
+            background: rgba(0,0,0,0);
         }
-        .btn-continue {
-            background: var(--pink-dark); color: white; border: none;
-            padding: 12px 30px; border-radius: 25px; font-weight: bold;
-            cursor: pointer; margin-top: 20px;
+
+        .popup-card { 
+            background: white; padding: 30px; border-radius: 30px; text-align: center; width: 320px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transform: scale(0.7);
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        .active .popup-card { transform: scale(1); }
+        .btn-continue { background: var(--pink-dark); color: white; border: none; padding: 12px 30px; border-radius: 25px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: all 0.4s ease; }
+
+        /* --- BẢNG LỜI NHẮN CUỐI CÙNG --- */
+        .letter-card {
+            background: var(--letter-pink);
+            width: 90%; max-width: 400px; height: 75vh;
+            border-radius: 30px; border: 6px solid white;
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            transform: scale(0.8); transition: transform 0.8s ease;
+        }
+        #final-letter-overlay.active .letter-card { transform: scale(1); }
+
+        .letter-header { 
+            padding: 20px; text-align: center; font-weight: bold;
+            color: var(--pink-dark); font-size: 20px; border-bottom: 2px dashed var(--pink-light);
+        }
+        .letter-content-wrapper {
+            flex: 1; overflow-y: auto; padding: 25px;
+            scrollbar-width: thin; scrollbar-color: var(--pink-main) transparent;
+        }
+        .letter-content-wrapper::-webkit-scrollbar { width: 6px; }
+        .letter-content-wrapper::-webkit-scrollbar-thumb { background: var(--pink-main); border-radius: 10px; }
+        
+        .typewriter-text {
+            font-size: 16px; line-height: 1.8; color: #5d4037;
+            white-space: pre-wrap; text-align: left; font-weight: 500;
+        }
+        .gift-container { text-align: center; margin-top: 30px; padding-bottom: 20px; display: none; }
+        .gift-img { width: 80px; animation: bounce 2s infinite; cursor: pointer; margin-bottom: 15px; }
+
+        /* --- TRÌNH PHÁT VIDEO --- */
+        .video-gift-wrapper {
+            margin-top: 20px; background: white; padding: 10px;
+            border-radius: 20px; box-shadow: 0 5px 15px rgba(216, 27, 96, 0.1);
+            display: none;
+        }
+        .video-container { width: 100%; border-radius: 15px; overflow: hidden; background: #000; line-height: 0; }
+        video { width: 100%; height: auto; }
+        .video-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .btn-video {
+            background: var(--pink-light); color: var(--pink-dark); border: none;
+            padding: 8px 15px; border-radius: 15px; font-size: 12px; font-weight: bold;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-video.active { background: var(--pink-dark); color: white; }
 
         /* --- STAGE RƠI ẢNH --- */
-        #main-stage {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: none; z-index: 10;
-        }
+        #main-stage { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10; }
+        .falling-item { position: absolute; top: -200px; will-change: top; display: flex; justify-content: center; align-items: center; }
+        .falling-photo { width: 100px; height: 100px; border: 4px solid white; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .falling-text { background: white; color: var(--pink-dark); padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--pink-main); white-space: nowrap; }
 
-        .falling-item {
-            position: absolute; top: -200px;
-            will-change: top;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        .falling-photo {
-            width: 100px; height: 100px;
-            border: 4px solid white; border-radius: 10px;
-            object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .falling-text {
-            background: white; color: var(--pink-dark);
-            padding: 8px 15px; border-radius: 20px;
-            font-weight: bold; font-size: 13px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border: 1px solid var(--pink-main);
-            white-space: nowrap;
+        @keyframes bounce { 
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
+            40% {transform: translateY(-20px);} 
+            60% {transform: translateY(-10px);} 
         }
     </style>
 </head>
 <body>
 
+    <audio id="bg-music" src="./a.mp3" loop></audio>
+
     <div id="lock-screen">
         <img src="./img/haha.png" class="lock-header-img" alt="Mã bí mật">
-        
         <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
         <div class="keypad" id="keyboard"></div>
+    </div>
+
+    <div id="wrong-pass-overlay">
+        <div class="popup-card">
+            <h2 id="wrong-title" style="color:var(--pink-dark)">SAIIIIII</h2>
+            <p id="wrong-pass-msg" style="margin-top: 10px; color: #666;">Em thử nhập tên người trong lòng em có thể sẽ đúng đó</p>
+            <button class="btn-continue" onclick="resetPass()">Quay lại nhập lại</button>
+        </div>
     </div>
 
     <div id="popup-overlay">
         <div class="popup-card">
             <h2 style="color:var(--pink-dark)">Ý nghĩa của Ncin ❤️</h2>
-            <p>Ncin được tách từ những chữ cái tên của anh Ngoc ChIến hoặc có thể là NC   I❤️   N :> .</p>
+            <p style="margin-top: 10px; color: #666;">Ncin được tách từ những chữ cái tên của anh Ngọc Chiến hoặc có thể là NC I ❤️ N :></p>
             <button class="btn-continue" onclick="startFalling()">Tiếp tục</button>
+        </div>
+    </div>
+
+    <div id="click-trigger-overlay" onclick="handleScreenClick()"></div>
+
+    <div id="final-letter-overlay">
+        <div class="letter-card">
+            <div class="letter-header">Gửi Em Người Mà Anh Yêu ❤️</div>
+            <div class="letter-content-wrapper" id="scroll-area">
+                <div class="typewriter-text" id="typewriter"></div>
+                
+                <div class="gift-container" id="gift-box">
+                    <p style="margin-bottom: 10px; font-weight: bold; color: var(--pink-dark);">Món quà nhỏ dành cho em</p>
+
+                    
+                    <div class="video-gift-wrapper" id="video-wrapper">
+                        <div class="video-container">
+                            <video id="main-video" controls>
+                                <source id="video-source" src="./2026_03_02_23_18_IMG_0741.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="video-controls">
+                            <button class="btn-video active" id="btn-v1" onclick="changeVideo('./2026_03_02_23_18_IMG_0741.mp4', 'btn-v1')">Video 1</button>
+                            <button class="btn-video" id="btn-v2" onclick="changeVideo('./video2.mp4', 'btn-v2')">Video 2</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="main-stage"></div>
 
     <script>
-        const PASS = "abcd";
-        const KEYS = ['a', 'b', 'c', 'd', 'n', 'f', 'c', 'i', 'k'];
-        let currentInput = "";
-        const dots = document.querySelectorAll('.dot');
+        const PASS = "NCIN";
+        const PASS_SUB = "QNHU";
+        const KEYS = ['Q', 'N', 'H', 'U', 'E', 'F', 'C', 'I', 'K'];
+        
+        const message = `Chúc bé một ngày 8/3 thật hạnh phúc, luôn xinh đẹp và rạng rỡ. Hãy luôn là chính mình em nhé! 🌹\n\nHãy luôn giữ nụ cười trên môi nhé, vì nụ cười của em là điều quý giá nhất đối với anh.`;
 
-        // Bàn phím
+        const myImages = [
+            "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg",
+            "2024_09_27_01_44_IMG_4618.PNG", "2024_10_13_20_36_IMG_4818.JPG",
+            "2024_10_13_20_36_IMG_4821.JPG", "2024_10_21_14_06_IMG_1263.JPG",
+            "2024_10_21_14_22_IMG_2073.JPG", "2024_12_04_02_37_IMG_5400.JPG",
+            "2024_12_04_03_23_IMG_5410.JPEG", "2024_12_25_00_23_IMG_5641.JPG",
+            "2025_01_03_00_32_IMG_5731.JPG", "2025_01_12_00_01_IMG_5829.JPG",
+            "2025_06_30_17_13_IMG_7952.JPG", "2025_07_31_00_44_IMG_8359.JPG",
+            "2025_11_29_13_32_IMG_9871.JPG", "2026_03_04_09_18_IMG_0763.JPEG",
+            "2026_03_04_09_18_IMG_0764.JPEG", "2026_03_04_09_19_IMG_0765.JPEG",
+            "2026_03_04_09_19_IMG_0766.JPG", "2026_03_04_09_19_IMG_0767.JPG",
+            "2026_03_04_09_22_IMG_0768.JPG"
+        ];
+
+        const rawWords = ["Chúc em 8/3", "Vui Vẻ", "Xinh Đẹp", "Hạnh Phúc", "Công Chúa","Sang Trọng","Đẳng Cấp","Thượng Hạng","Yêu Em","Người đẹp"];
+        let availableWords = [...rawWords];
+        let currentInput = "";
+        let availableImages = [...myImages];
+        const dots = document.querySelectorAll('.dot');
+        const music = document.getElementById('bg-music');
+
+        // Khởi tạo bàn phím
         KEYS.forEach(char => {
             const btn = document.createElement('div');
-            btn.className = 'key';
-            btn.innerText = char;
+            btn.className = 'key'; btn.innerText = char;
             btn.onclick = () => {
                 if(currentInput.length < 4) {
                     currentInput += char;
                     dots[currentInput.length-1].classList.add('active');
-                    if(currentInput.length === 4) {
-                        if(currentInput === PASS) {
-                            document.getElementById('lock-screen').style.display = "none";
-                            document.getElementById('popup-overlay').style.display = "flex";
-                        } else {
-                            currentInput = "";
-                            dots.forEach(d => d.classList.remove('active'));
-                        }
-                    }
+                    if(currentInput.length === 4) checkPassword();
                 }
             };
             document.getElementById('keyboard').appendChild(btn);
         });
 
+        function checkPassword() {
+            if(currentInput === PASS) {
+                music.play();
+                document.getElementById('lock-screen').style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById('lock-screen').style.display = "none";
+                    showPopup('popup-overlay');
+                }, 800);
+            } else if(currentInput === PASS_SUB) {
+                document.getElementById('wrong-title').innerText = "Sai ròi";
+                document.getElementById('wrong-pass-msg').innerText = "Sao em nhập tên người anh iu vậy ❤️";
+                showPopup('wrong-pass-overlay');
+            } else {
+                showPopup('wrong-pass-overlay');
+            }
+        }
+
+        function resetPass() {
+            currentInput = "";
+            dots.forEach(d => d.classList.remove('active'));
+            const pop = document.getElementById('wrong-pass-overlay');
+            pop.classList.remove('active');
+            setTimeout(() => pop.style.display = "none", 400);
+        }
+
         function startFalling() {
-            document.getElementById('popup-overlay').style.display = "none";
+            const pop = document.getElementById('popup-overlay');
+            pop.classList.remove('active');
+            setTimeout(() => pop.style.display = "none", 800);
+
             const stage = document.getElementById('main-stage');
             stage.style.display = "block";
 
             const laneCount = window.innerWidth > 600 ? 8 : 4; 
             const laneWidth = window.innerWidth / laneCount;
             let laneHeights = new Array(laneCount).fill(0);
+            const totalItemsToSpawn = myImages.length + rawWords.length;
+            let currentSpawned = 0;
 
             const interval = setInterval(() => {
                 let availableLanes = [];
                 for(let i=0; i<laneCount; i++) {
-                    if(laneHeights[i] < window.innerHeight - 120) availableLanes.push(i);
+                    if(laneHeights[i] < window.innerHeight - 150) availableLanes.push(i);
                 }
 
-                if(availableLanes.length === 0) {
+                if(availableLanes.length === 0 || currentSpawned >= totalItemsToSpawn) {
                     clearInterval(interval);
-                    setTimeout(() => window.open("https://www.youtube.com/watch?v=5h8wdwKyeDM", "_blank"), 2000);
+                    setTimeout(() => {
+                        document.getElementById('click-trigger-overlay').style.display = "block";
+                    }, 1500);
                     return;
                 }
 
                 const laneIdx = availableLanes[Math.floor(Math.random() * availableLanes.length)];
                 spawnItem(laneIdx, laneWidth, laneHeights);
+                currentSpawned++;
             }, 600);
         }
 
@@ -180,41 +288,90 @@
             const stage = document.getElementById('main-stage');
             const item = document.createElement('div');
             item.className = 'falling-item';
-            
             let itemH = 0;
-            if(Math.random() > 0.4) {
+            let shouldSpawnImage = Math.random() > 0.4; 
+
+            if (availableImages.length === 0) shouldSpawnImage = false;
+            if (availableWords.length === 0) shouldSpawnImage = true;
+
+            if(shouldSpawnImage && availableImages.length > 0) { 
                 const img = document.createElement('img');
-                img.src = `https://picsum.photos/150/150?random=${Math.random()}`;
+                const randomIndex = Math.floor(Math.random() * availableImages.length);
+                img.src = `./img2/${availableImages[randomIndex]}`;
+                availableImages.splice(randomIndex, 1);
                 img.className = 'falling-photo';
                 item.appendChild(img);
                 itemH = 100;
-            } else {
+            } else if (availableWords.length > 0) {
                 const span = document.createElement('span');
-                const words = ["Yêu em", "8/3 Vui Vẻ", "Xinh Đẹp", "Hạnh Phúc", "Princess"];
-                span.innerText = words[Math.floor(Math.random()*words.length)];
+                const randomIndex = Math.floor(Math.random() * availableWords.length);
+                span.innerText = availableWords[randomIndex];
+                availableWords.splice(randomIndex, 1);
                 span.className = 'falling-text';
                 item.appendChild(span);
                 itemH = 40;
             }
 
             const xPos = laneIdx * laneWidth + (laneWidth/2 - 50); 
-            const stopY = window.innerHeight - laneHeights[laneIdx] - itemH - 20;
-            laneHeights[laneIdx] += (itemH + 20);
-
+            const stopY = window.innerHeight - laneHeights[laneIdx] - itemH - 30;
+            laneHeights[laneIdx] += (itemH + 25);
             item.style.left = xPos + "px";
             stage.appendChild(item);
 
-            const duration = 2000;
+            const duration = 2500; 
             const start = performance.now();
             function animate(now) {
                 const elapsed = now - start;
                 const progress = Math.min(elapsed / duration, 1);
-                const ease = 1 - (1 - progress) * (1 - progress);
+                const ease = 1 - Math.pow(1 - progress, 4); 
                 item.style.top = (-200 + (stopY + 200) * ease) + "px";
                 if(progress < 1) requestAnimationFrame(animate);
-                else item.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+                else item.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
             }
             requestAnimationFrame(animate);
+        }
+
+        function handleScreenClick() {
+            document.getElementById('click-trigger-overlay').style.display = "none";
+            showPopup('final-letter-overlay');
+            startTypewriter();
+        }
+
+        function showPopup(id) {
+            const pop = document.getElementById(id);
+            pop.style.display = "flex";
+            setTimeout(() => pop.classList.add('active'), 50);
+        }
+
+        function startTypewriter() {
+            const textElement = document.getElementById('typewriter');
+            const scrollArea = document.getElementById('scroll-area');
+            let i = 0;
+            
+            function type() {
+                if (i < message.length) {
+                    textElement.innerHTML += message.charAt(i);
+                    i++;
+                    scrollArea.scrollTop = scrollArea.scrollHeight;
+                    setTimeout(type, 50);
+                } else {
+                    document.getElementById('gift-box').style.display = "block";
+                    document.getElementById('video-wrapper').style.display = "block";
+                    scrollArea.scrollTop = scrollArea.scrollHeight;
+                }
+            }
+            type();
+        }
+
+        function changeVideo(src, btnId) {
+            const video = document.getElementById('main-video');
+            const source = document.getElementById('video-source');
+            const btns = document.querySelectorAll('.btn-video');
+            btns.forEach(b => b.classList.remove('active'));
+            document.getElementById(btnId).classList.add('active');
+            source.src = src;
+            video.load();
+            video.play();
         }
     </script>
 </body>
