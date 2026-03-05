@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi tặng Qnhu 8/3 - Special Edition</title>
+    <title>Gửi tặng Qnhu 8/3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --pink-bg: #fce4ec;
@@ -15,7 +17,11 @@
             --paper-color: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Thay đổi font mặc định toàn trang thành Quicksand */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Quicksand', sans-serif; 
+        }
 
         body {
             background-color: var(--pink-bg);
@@ -46,7 +52,7 @@
         .key { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; font-weight: bold; color: var(--pink-dark); box-shadow: 0 4px 0 var(--pink-main); transition: all 0.2s ease; }
         .key:active { transform: translateY(2px); box-shadow: none; }
 
-        /* --- POPUPS DẠNG MẢNH GIẤY XÉ --- */
+        /* --- POPUPS --- */
         #popup-overlay, #wrong-pass-overlay, #final-letter-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
@@ -67,7 +73,6 @@
             text-align: center; 
             width: 320px; 
             position: relative;
-            /* Tạo hiệu ứng mép giấy xé bằng clip-path, nham nhở ít */
             clip-path: polygon(
                 0% 2%, 10% 0%, 20% 3%, 30% 0%, 40% 4%, 50% 0%, 60% 3%, 70% 0%, 80% 4%, 90% 0%, 100% 2%, 
                 100% 97%, 90% 100%, 80% 96%, 70% 99%, 60% 95%, 50% 100%, 40% 96%, 30% 98%, 20% 95%, 10% 99%, 0% 97%
@@ -77,16 +82,6 @@
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        /* Hiệu ứng bóng đổ cho mảnh giấy */
-        .popup-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.03);
-            z-index: -1;
-            transform: translate(5px, 5px);
-        }
-
         .active .popup-card { transform: scale(1) rotate(0deg); }
         
         .btn-continue { 
@@ -96,18 +91,22 @@
             box-shadow: 2px 2px 0px #880e4f;
             transition: all 0.2s ease;
         }
-        .btn-continue:active { transform: translate(1px, 1px); box-shadow: none; }
 
-        /* --- BẢNG LỜI NHẮN CUỐI CÙNG (CŨNG DẠNG GIẤY XÉ) --- */
+        /* Tiêu đề popup dùng font Dancing Script cho đẹp */
+        .popup-card h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        /* --- BẢNG LỜI NHẮN CUỐI CÙNG --- */
         .letter-card {
             background: var(--letter-pink);
             width: 90%; max-width: 400px; height: 75vh;
-            border-radius: 0px; border: none; /* Bỏ radius và border cũ */
+            border-radius: 0px; border: none;
             position: relative; overflow: hidden; display: flex; flex-direction: column;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             transform: scale(0.8); transition: transform 0.8s ease;
-            
-            /* Tạo hiệu ứng giấy xé cho thư, nham nhở ít */
             clip-path: polygon(
                 0% 2%, 10% 0%, 20% 3%, 30% 0%, 40% 4%, 50% 0%, 60% 3%, 70% 0%, 80% 4%, 90% 0%, 100% 2%, 
                 100% 97%, 90% 100%, 80% 96%, 70% 99%, 60% 95%, 50% 100%, 40% 96%, 30% 98%, 20% 95%, 10% 99%, 0% 97%
@@ -115,7 +114,6 @@
         }
         #final-letter-overlay.active .letter-card { transform: scale(1); }
 
-        /* Hình dán trang trí */
         .sticker {
             position: absolute; font-size: 24px; opacity: 0.8; animation: sway 3s infinite alternate ease-in-out; z-index: 10;
         }
@@ -126,24 +124,24 @@
 
         .letter-header { 
             padding: 20px; text-align: center; font-weight: bold;
-            color: var(--pink-dark); font-size: 20px; border-bottom: 2px dashed var(--pink-light);
-            position: relative; /* Để sticker nằm trên cùng */
+            color: var(--pink-dark); font-size: 24px; border-bottom: 2px dashed var(--pink-light);
+            position: relative;
+            font-family: 'Dancing Script', cursive; /* Font tiêu đề thư */
         }
         .letter-content-wrapper {
             flex: 1; overflow-y: auto; padding: 25px;
             scrollbar-width: thin; scrollbar-color: var(--pink-main) transparent;
         }
-        .letter-content-wrapper::-webkit-scrollbar { width: 6px; }
-        .letter-content-wrapper::-webkit-scrollbar-thumb { background: var(--pink-main); border-radius: 10px; }
         
         .typewriter-text {
-            font-size: 16px; line-height: 1.8; color: #5d4037;
-            white-space: pre-wrap; text-align: left; font-weight: 500;
+            font-size: 17px; line-height: 1.8; color: #5d4037;
+            white-space: pre-wrap; text-align: left; 
+            font-weight: 600; /* Làm đậm nội dung cho dễ đọc trên đt */
         }
+        
         .gift-container { text-align: center; margin-top: 30px; padding-bottom: 20px; display: none; }
-        .gift-img { width: 80px; animation: bounce 2s infinite; cursor: pointer; margin-bottom: 15px; }
 
-        /* --- TRÌNH PHÁT VIDEO --- */
+        /* --- VIDEO --- */
         .video-gift-wrapper {
             margin-top: 20px; background: white; padding: 10px;
             border-radius: 20px; box-shadow: 0 5px 15px rgba(216, 27, 96, 0.1);
@@ -184,7 +182,7 @@
 
     <div id="wrong-pass-overlay">
         <div class="popup-card">
-            <h2 id="wrong-title" style="color:var(--pink-dark); font-family: cursive;">SAIIIIII</h2>
+            <h2 id="wrong-title" style="color:var(--pink-dark);">SAIIIIII</h2>
             <p id="wrong-pass-msg" style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Em thử nhập tên người trong lòng em có thể sẽ đúng đó ❤️</p>
             <button class="btn-continue" onclick="resetPass()">Ghi lại</button>
         </div>
@@ -192,7 +190,7 @@
 
     <div id="popup-overlay">
         <div class="popup-card">
-            <h2 style="color:var(--pink-dark); font-family: cursive;">Ý nghĩa của Ncin ❤️</h2>
+            <h2 style="color:var(--pink-dark);">Ý nghĩa của Ncin ❤️</h2>
             <p style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Ncin được tách từ những chữ cái tên của anh Ngọc Chiến hoặc có thể là NC I ❤️ N :></p>
             <button class="btn-continue" onclick="startFalling()">Khám phá tiếp</button>
         </div>
@@ -233,6 +231,7 @@
     <div id="main-stage"></div>
 
     <script>
+        // JS giữ nguyên hoàn toàn như cũ
         const PASS = "NCIN";
         const PASS_SUB = "QNHU";
         const KEYS = ['Q', 'N', 'H', 'U', 'E', 'F', 'C', 'I', 'K'];
@@ -260,7 +259,6 @@
         const dots = document.querySelectorAll('.dot');
         const music = document.getElementById('bg-music');
 
-        // Khởi tạo bàn phím
         KEYS.forEach(char => {
             const btn = document.createElement('div');
             btn.className = 'key'; btn.innerText = char;
@@ -303,22 +301,18 @@
             const pop = document.getElementById('popup-overlay');
             pop.classList.remove('active');
             setTimeout(() => pop.style.display = "none", 800);
-
             const stage = document.getElementById('main-stage');
             stage.style.display = "block";
-
             const laneCount = window.innerWidth > 600 ? 8 : 4; 
             const laneWidth = window.innerWidth / laneCount;
             let laneHeights = new Array(laneCount).fill(0);
             const totalItemsToSpawn = myImages.length + rawWords.length;
             let currentSpawned = 0;
-
             const interval = setInterval(() => {
                 let availableLanes = [];
                 for(let i=0; i<laneCount; i++) {
                     if(laneHeights[i] < window.innerHeight - 150) availableLanes.push(i);
                 }
-
                 if(availableLanes.length === 0 || currentSpawned >= totalItemsToSpawn) {
                     clearInterval(interval);
                     setTimeout(() => {
@@ -326,7 +320,6 @@
                     }, 1500);
                     return;
                 }
-
                 const laneIdx = availableLanes[Math.floor(Math.random() * availableLanes.length)];
                 spawnItem(laneIdx, laneWidth, laneHeights);
                 currentSpawned++;
@@ -339,10 +332,8 @@
             item.className = 'falling-item';
             let itemH = 0;
             let shouldSpawnImage = Math.random() > 0.4; 
-
             if (availableImages.length === 0) shouldSpawnImage = false;
             if (availableWords.length === 0) shouldSpawnImage = true;
-
             if(shouldSpawnImage && availableImages.length > 0) { 
                 const img = document.createElement('img');
                 const randomIndex = Math.floor(Math.random() * availableImages.length);
@@ -360,13 +351,11 @@
                 item.appendChild(span);
                 itemH = 40;
             }
-
             const xPos = laneIdx * laneWidth + (laneWidth/2 - 50); 
             const stopY = window.innerHeight - laneHeights[laneIdx] - itemH - 30;
             laneHeights[laneIdx] += (itemH + 25);
             item.style.left = xPos + "px";
             stage.appendChild(item);
-
             const duration = 2500; 
             const start = performance.now();
             function animate(now) {
@@ -396,7 +385,6 @@
             const textElement = document.getElementById('typewriter');
             const scrollArea = document.getElementById('scroll-area');
             let i = 0;
-            
             function type() {
                 if (i < message.length) {
                     textElement.innerHTML += message.charAt(i);
