@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gửi tặng Qnhu 8/3</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --pink-bg: #fce4ec;
@@ -15,13 +13,13 @@
             --text-color: #d81b60;
             --letter-pink: #fff0f5; 
             --paper-color: #ffffff;
+            /* Font chữ hệ thống mềm mại cho tiêu đề */
+            --font-serif: Georgia, 'Times New Roman', Times, serif;
+            /* Font chữ hiện đại, dễ đọc cho nội dung */
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* Thay đổi font mặc định toàn trang thành Quicksand */
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            font-family: 'Quicksand', sans-serif; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-sans); }
 
         body {
             background-color: var(--pink-bg);
@@ -32,6 +30,7 @@
             background-size: 60px 60px;
             min-height: 100vh; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
+            touch-action: manipulation; /* Tối ưu chạm trên mobile */
         }
 
         /* --- MÀN HÌNH KHÓA --- */
@@ -49,10 +48,16 @@
         .dot { width: 12px; height: 12px; border: 2px solid var(--pink-dark); border-radius: 50%; transition: background 0.3s ease; }
         .dot.active { background: var(--pink-dark); }
         .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
-        .key { width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 20px; font-weight: bold; color: var(--pink-dark); box-shadow: 0 4px 0 var(--pink-main); transition: all 0.2s ease; }
+        .key { 
+            width: 60px; height: 60px; background: white; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center; 
+            cursor: pointer; font-size: 20px; font-weight: bold; 
+            color: var(--pink-dark); box-shadow: 0 4px 0 var(--pink-main); 
+            transition: all 0.2s ease;
+        }
         .key:active { transform: translateY(2px); box-shadow: none; }
 
-        /* --- POPUPS --- */
+        /* --- POPUPS DẠNG MẢNH GIẤY XÉ --- */
         #popup-overlay, #wrong-pass-overlay, #final-letter-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px);
@@ -82,6 +87,12 @@
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
+        .popup-card h2 {
+            font-family: var(--font-serif);
+            color: var(--pink-dark);
+            font-style: italic;
+        }
+
         .active .popup-card { transform: scale(1) rotate(0deg); }
         
         .btn-continue { 
@@ -90,20 +101,14 @@
             cursor: pointer; margin-top: 25px; 
             box-shadow: 2px 2px 0px #880e4f;
             transition: all 0.2s ease;
-        }
-
-        /* Tiêu đề popup dùng font Dancing Script cho đẹp */
-        .popup-card h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 28px;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* --- BẢNG LỜI NHẮN CUỐI CÙNG --- */
         .letter-card {
             background: var(--letter-pink);
-            width: 90%; max-width: 400px; height: 75vh;
-            border-radius: 0px; border: none;
+            width: 92%; max-width: 400px; height: 78vh;
             position: relative; overflow: hidden; display: flex; flex-direction: column;
             box-shadow: 0 20px 50px rgba(0,0,0,0.2);
             transform: scale(0.8); transition: transform 0.8s ease;
@@ -114,34 +119,29 @@
         }
         #final-letter-overlay.active .letter-card { transform: scale(1); }
 
-        .sticker {
-            position: absolute; font-size: 24px; opacity: 0.8; animation: sway 3s infinite alternate ease-in-out; z-index: 10;
-        }
-        @keyframes sway {
-            from { transform: rotate(-10deg); }
-            to { transform: rotate(10deg); }
+        .letter-header { 
+            padding: 25px 20px 15px; text-align: center; font-weight: bold;
+            color: var(--pink-dark); font-size: 22px; border-bottom: 2px dashed var(--pink-light);
+            position: relative;
+            font-family: var(--font-serif);
+            font-style: italic;
         }
 
-        .letter-header { 
-            padding: 20px; text-align: center; font-weight: bold;
-            color: var(--pink-dark); font-size: 24px; border-bottom: 2px dashed var(--pink-light);
-            position: relative;
-            font-family: 'Dancing Script', cursive; /* Font tiêu đề thư */
-        }
         .letter-content-wrapper {
             flex: 1; overflow-y: auto; padding: 25px;
-            scrollbar-width: thin; scrollbar-color: var(--pink-main) transparent;
+            /* Tạo dòng kẻ giấy mờ */
+            background-image: linear-gradient(transparent 95%, #f1d1d1 95%);
+            background-size: 100% 1.8em;
         }
         
         .typewriter-text {
             font-size: 17px; line-height: 1.8; color: #5d4037;
-            white-space: pre-wrap; text-align: left; 
-            font-weight: 600; /* Làm đậm nội dung cho dễ đọc trên đt */
+            white-space: pre-wrap; text-align: left; font-weight: 500;
+            font-family: "Optima", "Candara", "Noto Sans", sans-serif;
         }
-        
-        .gift-container { text-align: center; margin-top: 30px; padding-bottom: 20px; display: none; }
 
-        /* --- VIDEO --- */
+        /* --- TRÌNH PHÁT VIDEO --- */
+        .gift-container { text-align: center; margin-top: 30px; padding-bottom: 20px; display: none; }
         .video-gift-wrapper {
             margin-top: 20px; background: white; padding: 10px;
             border-radius: 20px; box-shadow: 0 5px 15px rgba(216, 27, 96, 0.1);
@@ -149,7 +149,6 @@
         }
         .video-container { width: 100%; border-radius: 15px; overflow: hidden; background: #000; line-height: 0; }
         video { width: 100%; height: auto; }
-        .video-controls { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
         .btn-video {
             background: var(--pink-light); color: var(--pink-dark); border: none;
             padding: 8px 15px; border-radius: 15px; font-size: 12px; font-weight: bold;
@@ -163,11 +162,9 @@
         .falling-photo { width: 100px; height: 100px; border: 4px solid white; border-radius: 10px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .falling-text { background: white; color: var(--pink-dark); padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 13px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--pink-main); white-space: nowrap; }
 
-        @keyframes bounce { 
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 
-            40% {transform: translateY(-20px);} 
-            60% {transform: translateY(-10px);} 
-        }
+        .sticker { position: absolute; font-size: 24px; opacity: 0.8; animation: sway 3s infinite alternate ease-in-out; z-index: 10; }
+        @keyframes sway { from { transform: rotate(-10deg); } to { transform: rotate(10deg); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-20px);} 60% {transform: translateY(-10px);} }
     </style>
 </head>
 <body>
@@ -182,7 +179,7 @@
 
     <div id="wrong-pass-overlay">
         <div class="popup-card">
-            <h2 id="wrong-title" style="color:var(--pink-dark);">SAIIIIII</h2>
+            <h2 id="wrong-title">SAIIIIII</h2>
             <p id="wrong-pass-msg" style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Em thử nhập tên người trong lòng em có thể sẽ đúng đó ❤️</p>
             <button class="btn-continue" onclick="resetPass()">Ghi lại</button>
         </div>
@@ -190,7 +187,7 @@
 
     <div id="popup-overlay">
         <div class="popup-card">
-            <h2 style="color:var(--pink-dark);">Ý nghĩa của Ncin ❤️</h2>
+            <h2>Ý nghĩa của Ncin ❤️</h2>
             <p style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Ncin được tách từ những chữ cái tên của anh Ngọc Chiến hoặc có thể là NC I ❤️ N :></p>
             <button class="btn-continue" onclick="startFalling()">Khám phá tiếp</button>
         </div>
@@ -205,16 +202,15 @@
             <div class="sticker" style="bottom: 20px; left: 20px; animation-delay: 1s;">🌸</div>
             <div class="sticker" style="bottom: 15px; right: 25px; animation-delay: 1.5s;">💝</div>
             
-            <div class="letter-header">Happy Woman Day ❤️</div>
+            <div class="letter-header">Happy Women's Day ❤️</div>
             <div class="letter-content-wrapper" id="scroll-area">
                 <div class="typewriter-text" id="typewriter"></div>
                 
                 <div class="gift-container" id="gift-box">
                     <p style="margin-bottom: 10px; font-weight: bold; color: var(--pink-dark);">Món quà nhỏ dành cho em</p>
-                    
                     <div class="video-gift-wrapper" id="video-wrapper">
                         <div class="video-container">
-                            <video id="main-video" controls>
+                            <video id="main-video" controls playsinline>
                                 <source id="video-source" src="./2026_03_02_23_18_IMG_0741.mp4" type="video/mp4">
                             </video>
                         </div>
@@ -231,7 +227,6 @@
     <div id="main-stage"></div>
 
     <script>
-        // JS giữ nguyên hoàn toàn như cũ
         const PASS = "NCIN";
         const PASS_SUB = "QNHU";
         const KEYS = ['Q', 'N', 'H', 'U', 'E', 'F', 'C', 'I', 'K'];
@@ -259,6 +254,7 @@
         const dots = document.querySelectorAll('.dot');
         const music = document.getElementById('bg-music');
 
+        // Khởi tạo bàn phím
         KEYS.forEach(char => {
             const btn = document.createElement('div');
             btn.className = 'key'; btn.innerText = char;
@@ -266,7 +262,7 @@
                 if(currentInput.length < 4) {
                     currentInput += char;
                     dots[currentInput.length-1].classList.add('active');
-                    if(currentInput.length === 4) checkPassword();
+                    if(currentInput.length === 4) setTimeout(checkPassword, 300);
                 }
             };
             document.getElementById('keyboard').appendChild(btn);
@@ -301,18 +297,22 @@
             const pop = document.getElementById('popup-overlay');
             pop.classList.remove('active');
             setTimeout(() => pop.style.display = "none", 800);
+
             const stage = document.getElementById('main-stage');
             stage.style.display = "block";
+
             const laneCount = window.innerWidth > 600 ? 8 : 4; 
             const laneWidth = window.innerWidth / laneCount;
             let laneHeights = new Array(laneCount).fill(0);
             const totalItemsToSpawn = myImages.length + rawWords.length;
             let currentSpawned = 0;
+
             const interval = setInterval(() => {
                 let availableLanes = [];
                 for(let i=0; i<laneCount; i++) {
                     if(laneHeights[i] < window.innerHeight - 150) availableLanes.push(i);
                 }
+
                 if(availableLanes.length === 0 || currentSpawned >= totalItemsToSpawn) {
                     clearInterval(interval);
                     setTimeout(() => {
@@ -320,6 +320,7 @@
                     }, 1500);
                     return;
                 }
+
                 const laneIdx = availableLanes[Math.floor(Math.random() * availableLanes.length)];
                 spawnItem(laneIdx, laneWidth, laneHeights);
                 currentSpawned++;
@@ -332,8 +333,10 @@
             item.className = 'falling-item';
             let itemH = 0;
             let shouldSpawnImage = Math.random() > 0.4; 
+
             if (availableImages.length === 0) shouldSpawnImage = false;
             if (availableWords.length === 0) shouldSpawnImage = true;
+
             if(shouldSpawnImage && availableImages.length > 0) { 
                 const img = document.createElement('img');
                 const randomIndex = Math.floor(Math.random() * availableImages.length);
@@ -351,11 +354,13 @@
                 item.appendChild(span);
                 itemH = 40;
             }
+
             const xPos = laneIdx * laneWidth + (laneWidth/2 - 50); 
             const stopY = window.innerHeight - laneHeights[laneIdx] - itemH - 30;
             laneHeights[laneIdx] += (itemH + 25);
             item.style.left = xPos + "px";
             stage.appendChild(item);
+
             const duration = 2500; 
             const start = performance.now();
             function animate(now) {
@@ -385,6 +390,7 @@
             const textElement = document.getElementById('typewriter');
             const scrollArea = document.getElementById('scroll-area');
             let i = 0;
+            
             function type() {
                 if (i < message.length) {
                     textElement.innerHTML += message.charAt(i);
