@@ -176,7 +176,7 @@
     <div id="wrong-pass-overlay">
         <div class="popup-card">
             <h2 id="wrong-title" style="font-family: var(--font-serif); font-style: italic; color: var(--pink-dark);">SAIIIIII</h2>
-            <p id="wrong-pass-msg" style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Em thử nhập tên người trong lòng em có thể sẽ đúng đó ❤️</p>
+            <p id="wrong-pass-msg" style="margin-top: 15px; color: #5d4037; font-size: 15px; line-height: 1.5;">Gợi ý : Ncin❤️</p>
             <button class="btn-continue" onclick="resetPass()">Ghi lại</button>
         </div>
     </div>
@@ -227,7 +227,13 @@
         const PASS_SUB = "QNHU";
         const KEYS = ['Q', 'N', 'H', 'U', 'E', 'F', 'C', 'I', 'K'];
         
-        const message = `Chúc em một ngày 8/3 thật hạnh phúc, luôn xinh đẹp và rạng rỡ 🌹\n\nHãy luôn giữ nụ cười trên môi nhé, vì nụ cười của em là điều quý giá nhất đối với anh.`;
+        const message = `Chúc em một ngày 8/3 thật hạnh phúc, luôn xinh đẹp và rạng rỡ 🌹\n\nHãy luôn giữ nụ cười trên môi nhé, vì nụ cười của em là điều quý giá nhất đối với anh.\nĐừng khóc nhè nữa nha . lớn rồi suy nghĩ đã khác rồi thì phải mạnh mẽ lên yếu đuối chỉ làm cuộc sống em tệ hơn thôi . chăm sóc tốt bản thân để sau này người khác phải theo đuổi em . em phải có giá trị riêng của em để người khác phải trân trọng em . 
+        \nNhớ ngủ sớm kẻo thiếu ngủ . ngủ sớm dậy muộn vẫn tốt hơn cả .
+        \nChú ý sức khỏe an mặc đàng hoàng vô với ngủ đất ko tốt cho sức khỏe đâu 
+        \nĂn uống đầy đủ đừng thừa cân là dc , đừng để mình đói làm stress
+        \nSau thằng nào tặng em quà giá trị thấp hoặc handmade ko bằng cả anh thì cho next em nhé . vì em xứng đáng nhận được nhiều điều tốt hơn
+        \nÀ thống nhất sau có kể về nyc với nym thì thì mình hãy nói "quên rồi" nhé . quên hết tất cả đi để có cuộc sống mới đừng kể để người mới phải đi bù đắp thay phần người cũ tổn thương họ .
+        \n Anh để cảm xúc đi trc suy nghĩ nên làm chứ ko nên nói nhiều dễ gây áp lực cho người khác . món quà này là lời xin lỗi thay lời nói của anh`;
 
         const myImages = [
             "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg",
@@ -273,7 +279,7 @@
                 }, 800);
             } else if(currentInput === PASS_SUB) {
                 document.getElementById('wrong-title').innerText = "Sai ròi";
-                document.getElementById('wrong-pass-msg').innerText = "Sao em nhập tên người anh iu vậy ❤️";
+                document.getElementById('wrong-pass-msg').innerText = "Sao em nhập tên người anh iu vậy ❤️ Gợi ý : Ncin";
                 showPopup('wrong-pass-overlay');
             } else {
                 showPopup('wrong-pass-overlay');
